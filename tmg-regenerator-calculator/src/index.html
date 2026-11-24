@@ -12,44 +12,81 @@
 <body>
 <div class="wrap">
 <header>
-  <h1>Regenerator liner vs. plain gap: where the displacer stroke tips the balance</h1>
-  <p class="lede">Compares today’s 1 mm annular gap with the finned 304 liner in a 3 mm gap. The fins cut the gas-side regenerator leak, but the liner’s steel adds a fixed conduction path from hot to cold. Slide the stroke to see which wins.</p>
+  <h1>Finned regenerator vs. plain annular gap: where the displacer stroke tips the balance</h1>
+  <p class="lede">A plain annular gap with no regenerator vs. a finned 304 regenerator. On a wide screen the inputs scroll on their own, so the results stay in view while you edit.</p>
   <div class="gradient" aria-hidden="true"></div>
   <div class="ends"><span>Cold end</span><span>Hot end</span></div>
 </header>
 
 <div class="grid">
 <aside aria-label="Inputs">
-  <div class="resetRow"><span id="resetMsg" aria-live="polite"></span><button type="button" id="reset">Reset to defaults</button></div>
+  <fieldset>
+    <legend>Design</legend>
+    <label for="preset" class="sr">Design</label>
+    <select id="preset"></select>
+    <p class="note" id="presetSummary"></p>
+    <p class="note dirty" id="dirtyNote" hidden>Edited since loaded. Save it to keep these changes.</p>
+    <div class="resetRow"><span id="resetMsg" aria-live="polite"></span><button type="button" id="reset">Reset to design values</button></div>
+    <div class="saveBox">
+      <label for="saveName">Save the current inputs as</label>
+      <div class="saveRow">
+        <input id="saveName" type="text" maxlength="80" placeholder="Design 3: 700 plunge slots" autocomplete="off">
+        <button type="button" id="saveBtn">Save design</button>
+      </div>
+      <p class="fieldErr" id="saveErr" role="alert"></p>
+      <div class="fileRow">
+        <button type="button" id="exportBtn">Export design file</button>
+        <label class="btnLike" for="importFile">Import design file</label>
+        <input id="importFile" type="file" accept=".json,application/json" class="sr">
+        <button type="button" id="deleteBtn" hidden>Delete saved design</button>
+      </div>
+      <p class="note" id="saveMsg" aria-live="polite"></p>
+      <p class="note" id="storeNote">Loading saved designs…</p>
+    </div>
+  </fieldset>
   <fieldset>
     <legend>Operating point</legend>
-    <div class="f"><label for="f">Frequency, Hz</label><input id="f" type="number" step="1" value="98"></div>
-    <div class="f"><label for="p">Mean pressure, Pa<small>101 325 Pa = 1 atm</small></label><input id="p" type="number" step="1000" value="101325"></div>
+    <div class="f"><label for="f">Frequency, Hz</label><input id="f" type="number" step="1" value="110"></div>
+    <div class="f"><label for="p">Mean pressure, Pa<small>101 325 Pa = 1 atm</small></label><input id="p" type="number" step="1000" value="150000"></div>
     <div class="f"><label for="ThC">Hot end, °C</label><input id="ThC" type="number" step="10" value="700"></div>
     <div class="quick" role="group" aria-label="Hot end presets">
-      <button type="button" data-th="400">Today, 400 °C</button>
+      <button type="button" data-th="400">Current test, 400 °C</button>
       <button type="button" data-th="700">Production, 700 °C</button>
     </div>
     <div class="f"><label for="TcC">Cold end, °C</label><input id="TcC" type="number" step="5" value="40"></div>
     <div class="f"><label for="LMM">Regenerator length, mm</label><input id="LMM" type="number" step="0.1" value="110.78"></div>
   </fieldset>
   <fieldset>
-    <legend>Today’s engine</legend>
+    <legend>Baseline engine, no regenerator</legend>
     <div class="f"><label for="Dh">Housing bore, mm</label><input id="Dh" type="number" step="0.01" value="155.8"></div>
-    <div class="f"><label for="Dd0">Displacer Ø, mm<small>1 mm gap version</small></label><input id="Dd0" type="number" step="0.01" value="153.8"></div>
-    <div class="f"><label for="Vm">Total gas volume Vm, cc<small>placeholder: 25 W TMG value</small></label><input id="Vm" type="number" step="1" value="180"></div>
+    <div class="f"><label for="Dd0">Displacer Ø, mm<small>plain-gap displacer</small></label><input id="Dd0" type="number" step="0.01" value="153.8"></div>
+    <div class="f"><label for="Vm">Total gas volume Vm, cc<small>baseline engine; 25 W TMG placeholder</small></label><input id="Vm" type="number" step="1" value="180"></div>
     <div class="f"><label for="Vh">Hot volume Vh, cc<small>placeholder: 25 W TMG value</small></label><input id="Vh" type="number" step="1" value="50"></div>
   </fieldset>
   <fieldset>
-    <legend>Finned liner</legend>
-    <div class="f"><label for="Dd">Displacer Ø, mm</label><input id="Dd" type="number" step="0.01" value="149.8"></div>
-    <div class="f"><label for="N">Number of fins</label><input id="N" type="number" step="1" value="350"></div>
-    <div class="f"><label for="t">Fin thickness, mm</label><input id="t" type="number" step="0.01" value="0.654"></div>
-    <div class="f"><label for="Dt">Fin tip Ø, mm</label><input id="Dt" type="number" step="0.01" value="150.8"></div>
-    <div class="f"><label for="Dr">Slot root Ø, mm</label><input id="Dr" type="number" step="0.01" value="153.0"></div>
-    <div class="f"><label for="Do">Liner OD, mm</label><input id="Do" type="number" step="0.001" value="155.673"></div>
-    <div class="f"><label for="steelOverride">Liner steel area, mm²<small>0 = compute from geometry</small></label><input id="steelOverride" type="number" step="1" value="905.77"></div>
-    <div class="f"><label for="thin">Housing wall removed, mm<small>thinning behind the liner</small></label><input id="thin" type="number" step="0.1" value="0"></div>
+    <legend>Engine performance inputs</legend>
+    <div class="f"><label for="V0">Diaphragm swept volume, cc<small>placeholder: 25 W TMG value</small></label><input id="V0" type="number" step="1" value="45"></div>
+    <div class="f"><label for="theta">Displacer–diaphragm phase, °</label><input id="theta" type="number" step="1" value="90"></div>
+    <div class="f"><label for="otherLoss">Other mechanical losses, %<small>of ideal power; 25 W TMG ≈ 20</small></label><input id="otherLoss" type="number" step="1" value="20"></div>
+    <div class="f"><label for="otherLossAir">Other mechanical losses in air, %<small>likely higher than in helium</small></label><input id="otherLossAir" type="number" step="1" value="20"></div>
+    <div class="f"><label for="etaAlt">Alternator efficiency, %</label><input id="etaAlt" type="number" step="1" value="90"></div>
+    <div class="f"><label for="Qother">Other heat leaks, W<small>housing, insulation; same for both</small></label><input id="Qother" type="number" step="1" value="0"></div>
+  </fieldset>
+  <fieldset>
+    <legend>Finned regenerator: EDM slots</legend>
+    <div class="f"><label for="Dd">Displacer Ø, mm<small>with the regenerator</small></label><input id="Dd" type="number" step="0.01" value="151.8"></div>
+    <div class="f"><label for="Dt">Regenerator ID Ø, mm<small>bore at the fin tips</small></label><input id="Dt" type="number" step="0.01" value="152.8"></div>
+    <div class="f"><label for="Do">Regenerator OD Ø, mm</label><input id="Do" type="number" step="0.001" value="155.673"></div>
+    <div class="f"><label for="cut">Slot cut</label><select id="cut" class="small"><option value="contour">Contour</option><option value="plunge">Plunge</option></select></div>
+    <p class="note cutNote" id="cutNote"></p>
+    <div class="f"><label for="N">Number of slots</label><input id="N" type="number" step="1" value="620"></div>
+    <div class="f"><label for="b">Slot width, mm<small id="bHint">constant, parallel sides</small></label><input id="b" type="number" step="0.001" value="0.479"></div>
+    <div class="f"><label for="h">Slot depth, mm<small>bore to deepest point</small></label><input id="h" type="number" step="0.01" value="0.9"></div>
+    <div class="f"><label for="wire">EDM wire Ø, mm</label><input id="wire" type="number" step="0.01" value="0.20"></div>
+    <div class="f"><label for="overcut">Spark gap per side, mm</label><input id="overcut" type="number" step="0.005" value="0.025"></div>
+    <div class="f"><label for="minFin">Minimum fin, mm<small>0.381 mm = 0.015 in</small></label><input id="minFin" type="number" step="0.001" value="0.381"></div>
+    <div class="f"><label for="steelOverride">Regenerator steel area, mm²<small>0 = compute from geometry</small></label><input id="steelOverride" type="number" step="1" value="0"></div>
+    <div class="f"><label for="thin">Housing wall removed, mm<small>thinning behind the regenerator</small></label><input id="thin" type="number" step="0.1" value="0"></div>
     <p class="note" id="geomNote"></p>
   </fieldset>
 </aside>
@@ -63,33 +100,130 @@
         <input id="s" type="range" min="0.5" max="3" step="0.05" value="1.6">
         <div class="rangeMarks"><span>0.5</span><span>Your bracket: 1.0 to 2.2 mm</span><span>3.0</span></div>
       </div>
+      <div class="toggles">
+      <div class="gasRow" role="group" aria-label="Engine configuration">
+        <span>Engine</span>
+        <button type="button" id="cfgFin" class="gasBtn" aria-pressed="true">Finned regenerator</button>
+        <button type="button" id="cfgPlain" class="gasBtn" aria-pressed="false">No regenerator</button>
+      </div>
+      <div class="gasRow" role="group" aria-label="Working gas">
+        <span>Working gas</span>
+        <button type="button" id="gasHe" class="gasBtn" aria-pressed="true">Helium</button>
+        <button type="button" id="gasAir" class="gasBtn" aria-pressed="false">Air</button>
+      </div>
+      </div>
     </div>
     <p class="verdict" id="verdict"></p>
     <p class="sub" id="beNote"></p>
   </div>
 
-  <div class="chartBox">
+  <div class="dash dashTop">
+  <section class="col colChart" aria-label="Losses versus stroke">
+    <div class="chartBox">
     <div class="chartHead">
       <h2 id="chartTitle">Heat lost hot to cold vs. stroke</h2>
       <div class="quick" role="group" aria-label="Chart metric">
         <button type="button" id="mHeat" aria-pressed="true">Heat loss</button>
         <button type="button" id="mFlow" aria-pressed="false">Pumping loss</button>
+        <button type="button" id="mPow" aria-pressed="false">Electrical output</button>
+        <button type="button" id="mEff" aria-pressed="false">Efficiency</button>
       </div>
     </div>
     <div class="legend" id="legend"></div>
     <svg id="chart" viewBox="0 0 760 360" role="img" aria-label="Loss versus displacer stroke"></svg>
-  </div>
-
-  <div class="tableWrap">
+    </div>
+    <div class="tableWrap">
     <table>
-      <thead><tr><th>At the selected stroke</th><th>Today’s 1 mm gap</th><th>Finned liner</th><th>Change</th></tr></thead>
+      <thead><tr><th>At this stroke</th><th class="hA">Plain gap</th><th class="hB">Finned regenerator</th><th>Change</th></tr></thead>
       <tbody id="tbody"></tbody>
     </table>
+    </div>
+  </section>
+  <section class="gapBox" aria-labelledby="gaph">
+    <div class="chartHead">
+      <h2 id="gaph">Top-down view of the annular gap</h2>
+      <button type="button" id="gapPlay" aria-pressed="false">Play orbit</button>
+    </div>
+    <p class="sub" id="gapNote"></p>
+    <svg id="gapSvg" viewBox="0 0 680 410" role="img" aria-label="Top view of the displacer, regenerator and housing, and a true-proportion zoom of the gap at its narrowest point"></svg>
+    <div class="areaCards" role="group" aria-label="Highlight a cross-sectional area">
+      <button type="button" class="areaCard" data-hl="flow" aria-pressed="false"><span class="l">Gas flow area with regenerator</span><span class="v" id="aFlow">–</span><span class="d" id="aFlowD"></span></button>
+      <button type="button" class="areaCard" data-hl="gap" aria-pressed="false"><span class="l">Annular gap without regenerator</span><span class="v" id="aGap">–</span><span class="d" id="aGapD"></span></button>
+      <button type="button" class="areaCard" data-hl="steel" aria-pressed="false"><span class="l">Regenerator cross-section</span><span class="v" id="aSteel">–</span><span class="d" id="aSteelD"></span></button>
+    </div>
+    <p class="note">Select an area to highlight it. Flow area + regenerator = gap without regenerator.</p>
+    <div class="cards">
+      <div class="card"><p class="l">Nominal radial gap</p><p class="v" id="gNom">–</p></div>
+      <div class="card"><p class="l">Narrowest gap</p><p class="v" id="gMin">–</p></div>
+      <div class="card"><p class="l">Widest gap</p><p class="v" id="gMax">–</p></div>
+      <div class="card"><p class="l">Tip-gap flow vs. centered</p><p class="v" id="gFlow">–</p></div>
+    </div>
+    <div class="offsetRow">
+      <label for="ecc">Displacer offset from center, mm</label>
+      <input id="ecc" type="range" min="0" max="0.5" step="0.01" value="0.15">
+      <output id="eccOut" for="ecc">0.15 mm</output>
+    </div>
+    <p class="note"><span class="swatch" style="background:var(--disp)"></span>Displacer (moving)<span class="swatch" style="background:var(--steelFill)"></span>Finned regenerator (304)<span class="swatch" style="background:var(--housing)"></span>Housing (304)<span class="swatch" style="background:var(--gas)"></span>Gas. Red dot: narrowest point. The offset is visual only; it doesn’t change the loss model.</p>
+  </section>
+  <section class="perfBox" aria-labelledby="perfh">
+    <h2 id="perfh">Engine performance</h2>
+    <div class="perfCards">
+      <div class="pc"><p class="l">Electrical output</p><p class="v" id="pcP">–</p><p class="d" id="pcPd"></p></div>
+      <div class="pc"><p class="l">Efficiency, heat to electricity</p><p class="v" id="pcE">–</p><p class="d" id="pcEd"></p></div>
+      <div class="pc"><p class="l">Heat input needed</p><p class="v" id="pcQ">–</p><p class="d" id="pcQd"></p></div>
+      <div class="pc"><p class="l">Heat per watt out</p><p class="v" id="pcH">–</p><p class="d" id="pcHd"></p></div>
+    </div>
+    <div class="tableWrap inner">
+      <table>
+        <thead><tr><th>Watts, at this stroke</th><th class="hA">Plain gap</th><th class="hB">Finned regenerator</th><th>Change</th></tr></thead>
+        <tbody id="perfBody"></tbody>
+      </table>
+    </div>
+    <p class="note" id="perfNote"></p>
+  </section>
+  </div>
+
+  <div class="dash dashMid">
+  <section class="dvBox" aria-labelledby="dvh">
+    <h2 id="dvh">Output power vs. dead volume</h2>
+    <div class="legend" id="dvLegend"></div>
+    <svg id="dvSvg" viewBox="0 0 480 300" role="img" aria-label="Electrical output against total gas volume as the regenerator, displacer and other engine volumes change"></svg>
+    <p class="note" id="dvNote"></p>
+  </section>
+  <section class="finOut" aria-labelledby="finh">
+    <h2 id="finh">Resulting fins from the EDM slots</h2>
+    <dl id="finOut" aria-live="polite"></dl>
+    <ul id="finWarn"></ul>
+  </section>
+  <section class="edmBox" aria-labelledby="edmh">
+    <div class="chartHead">
+      <h2 id="edmh">EDM detail: slots and fins, true proportions</h2>
+      <button type="button" id="edmPlay" aria-pressed="false">Animate wire</button>
+    </div>
+    <svg id="edmSvg" viewBox="0 0 680 360" role="img" aria-label="Section through the regenerator showing the EDM slots, the fins between them, and the wire path"></svg>
+    <p class="note" id="edmNote"></p>
+  </section>
+  </div>
+
+  <div class="dash dashLow">
+  <section class="gasBox" aria-labelledby="gash">
+    <h2 id="gash">Helium vs. air at this stroke</h2>
+    <div class="tableWrap inner">
+      <table class="gasCmp">
+        <thead>
+          <tr><th rowspan="2"></th><th colspan="2" id="thHe">Helium</th><th colspan="2" id="thAir">Air</th></tr>
+          <tr><th class="hA">Plain gap</th><th class="hB">Finned regen.</th><th class="hA">Plain gap</th><th class="hB">Finned regen.</th></tr>
+        </thead>
+        <tbody id="gasBody"></tbody>
+      </table>
+    </div>
+    <p class="note" id="gasNote"></p>
+  </section>
   </div>
 
   <section class="eq" aria-labelledby="eqh">
     <h2 id="eqh">How the calculator works</h2>
-    <p>Each design is a set of parallel laminar passages: today’s single annulus, or the liner’s tip clearance, slots and OD clearance. The gas the displacer sweeps divides among them in proportion to their flow conductance, and each passage’s heat transfer is judged by its NTU. The model is quasi-steady, so use it to compare designs and see trends; confirm final numbers in Sage.</p>
+    <p>Each design is a set of parallel laminar passages: the plain annular gap, or the finned regenerator’s tip clearance, slots and OD clearance. The gas the displacer sweeps divides among them in proportion to their flow conductance, and each passage’s heat transfer is judged by its NTU. The model is quasi-steady, so use it to compare designs and see trends; confirm final numbers in Sage.</p>
 
     <h3>Gas flow from the displacer</h3>
     <div class="formula">V<sub>e</sub> = (π/4)·D<sub>d</sub>²·s &nbsp;&nbsp; V̂ = V<sub>e</sub>/2 &nbsp;&nbsp; Q̂ = ω·V̂ &nbsp;&nbsp; ω = 2πf</div>
@@ -104,11 +238,28 @@
     <div class="formula">ε′ = Σ φ<sub>i</sub>·2/(NTU<sub>i</sub> + 2) &nbsp;&nbsp; Q<sub>regen</sub> = ε′·(2/π)·ρ·Q̂·c<sub>p</sub>·(T<sub>h</sub> − T<sub>c</sub>)</div>
     <p>When NTU is large, ε′ ≈ 2/NTU, which grows in proportion to s, while the flow Q̂ also grows with s. So Q<sub>regen</sub> ≈ c·s²: doubling the stroke roughly quadruples the leak.</p>
     <h3>Steel conduction</h3>
-    <div class="formula">Q<sub>cond</sub> = k<sub>s</sub>·(A<sub>liner</sub> − A<sub>removed</sub>)·(T<sub>h</sub> − T<sub>c</sub>) / L &nbsp;&nbsp; k<sub>s</sub> ≈ 14.9 + 0.01325·T̄ (°C)</div>
+    <div class="formula">Q<sub>cond</sub> = k<sub>s</sub>·(A<sub>regen</sub> − A<sub>removed</sub>)·(T<sub>h</sub> − T<sub>c</sub>) / L &nbsp;&nbsp; k<sub>s</sub> ≈ 14.9 + 0.01325·T̄ (°C)</div>
     <p>This does not depend on stroke at all.</p>
     <h3>Break-even stroke</h3>
-    <div class="formula">c<sub>today</sub>·s*² = c<sub>liner</sub>·s*² + Q<sub>cond</sub> &nbsp;⇒&nbsp; s* ≈ √( Q<sub>cond</sub> / (c<sub>today</sub> − c<sub>liner</sub>) )</div>
-    <p>Below s* the liner loses more heat than it saves; above s* it wins. The calculator finds s* numerically from the full model.</p>
+    <div class="formula">c<sub>plain</sub>·s*² = c<sub>finned</sub>·s*² + Q<sub>cond</sub> &nbsp;⇒&nbsp; s* ≈ √( Q<sub>cond</sub> / (c<sub>plain</sub> − c<sub>finned</sub>) )</div>
+    <p>Below s* the finned regenerator loses more heat than it saves; above s* it wins. The calculator finds s* numerically from the full model.</p>
+    <h3>Engine performance</h3>
+    <div class="formula">P<sub>ideal</sub> = p·ω·V<sub>0</sub>·V<sub>e</sub>·sinθ / (8·V<sub>eff</sub>) · (T<sub>h</sub> − T<sub>c</sub>)/T<sub>h</sub> &nbsp;&nbsp; Q<sub>ideal</sub> = P<sub>ideal</sub>·T<sub>h</sub>/(T<sub>h</sub> − T<sub>c</sub>) &nbsp;&nbsp; (Chapter 6)</div>
+    <div class="formula">P<sub>elec</sub> = η<sub>alt</sub>·(P<sub>ideal</sub> − P<sub>flow</sub> − k<sub>other</sub>·P<sub>ideal</sub>) &nbsp;&nbsp; Q<sub>in</sub> = Q<sub>ideal</sub> + Q<sub>regen</sub> + Q<sub>cond</sub> + Q<sub>other</sub> &nbsp;&nbsp; η = P<sub>elec</sub>/Q<sub>in</sub></div>
+    <p>The finned regenerator changes the engine three ways: a smaller displacer and extra gas volume lower the ideal power (through V<sub>e</sub> and V<sub>eff</sub>), its pumping loss takes work directly, and its better regeneration cuts the heat that has to be supplied. Mechanical losses outside the regenerator are a fixed share of ideal power for both designs.</p>
+    <h3>Working gas</h3>
+    <div class="formula">ρ = p/(R·T<sub>r</sub>) &nbsp;&nbsp; NTU ∝ k<sub>g</sub>/(ρ·c<sub>p</sub>) &nbsp;&nbsp; δ<sub>g</sub> = √(2·k<sub>g</sub>/(ρ·c<sub>p</sub>·ω))</div>
+    <p>Helium: R = 2077 J/kg·K, c<sub>p</sub> = 5193 J/kg·K. Air: R = 287 J/kg·K, c<sub>p</sub> ≈ 1007 + 0.13·(T − 300) J/kg·K. At the same pressure and temperature, air conducts heat about 6 times less well and stores about 1.4 times more heat per unit volume, so its thermal diffusivity is about 8 times lower. Gaps sized for helium are far too wide for air. Chapter 6’s ideal power doesn’t depend on the gas, but its cavity heat-transfer losses scale with gap² ÷ diffusivity, so set “Other mechanical losses in air” higher than the helium value.</p>
+    <h3>Fins from the EDM slots</h3>
+    <div class="formula">D<sub>root</sub> = D<sub>ID</sub> + 2·d &nbsp;&nbsp; t<sub>fin</sub>(D) = π·D/N − b &nbsp;&nbsp; t<sub>wall</sub> = (D<sub>OD</sub> − D<sub>root</sub>)/2</div>
+    <div class="formula">A<sub>slots</sub> = N·b·d &nbsp;&nbsp; A<sub>fins</sub> = (π/4)·(D<sub>root</sub>² − D<sub>ID</sub>²) − N·b·d &nbsp;&nbsp; pitch = 360°/N</div>
+    <div class="formula">kerf = wire Ø + 2·spark gap &nbsp;&nbsp; r = kerf/2 (the radius the wire leaves)</div>
+    <div class="formula">Contoured: b ≥ kerf, A<sub>slot</sub> = b·d − (2 − π/2)·r² &nbsp;&nbsp; Plunge: b = kerf, A<sub>slot</sub> = b·(d − r) + π·r²/2</div>
+    <p>Wire EDM cuts parallel-sided slots, so the fins left between them taper: thinnest at the bore, thickest at the slot root. A contoured slot is cut by moving the wire across the slot, which leaves two root corners of radius r. A plunged slot is cut by feeding the wire straight to depth: it is one kerf wide with a full-round bottom, and takes much less wire travel.</p>
+    <h3>Annular gap</h3>
+    <div class="formula">c = (D<sub>tip</sub> − D<sub>d</sub>)/2 &nbsp;&nbsp; total = (D<sub>housing</sub> − D<sub>d</sub>)/2 = c + h<sub>fin</sub> + t<sub>wall</sub> + c<sub>OD</sub></div>
+    <div class="formula">g<sub>min</sub> = c − e &nbsp;&nbsp; g<sub>max</sub> = c + e &nbsp;&nbsp; Q<sub>off-center</sub>/Q<sub>centered</sub> = 1 + 1.5·(e/c)²</div>
+    <p>An off-center displacer pushes more gas through the wide side of the tip gap, bypassing the slots. Worst-case narrowest gap: g<sub>min</sub> = (smallest tip bore − largest displacer OD)/2 − (regenerator float + runout + displacer centering).</p>
     <h3>Pressure swing (Chapter 6, Equation 6.1)</h3>
     <div class="formula">Δp<sub>swing</sub> ∝ V<sub>e</sub> / (V<sub>m</sub> − V<sub>h</sub>·F) &nbsp;&nbsp; F = (T<sub>h</sub> − T<sub>c</sub>)/T<sub>h</sub> &nbsp;&nbsp; ΔV<sub>eff</sub> = ΔV·(1 − F/2)</div>
 
@@ -139,9 +290,18 @@
         <tr><td>ε′</td><td>Regenerator ineffectiveness, the fraction of heat that leaks through</td><td>–</td></tr>
         <tr><td>Q<sub>regen</sub></td><td>Heat carried hot to cold by imperfect regeneration</td><td>W</td></tr>
         <tr><td>k<sub>s</sub></td><td>Mean thermal conductivity of 304 between T<sub>c</sub> and T<sub>h</sub></td><td>W/m·K</td></tr>
-        <tr><td>A<sub>liner</sub>, A<sub>removed</sub></td><td>Liner steel cross-section; housing steel removed behind it</td><td>m²</td></tr>
-        <tr><td>Q<sub>cond</sub></td><td>Extra hot-to-cold conduction through the liner steel</td><td>W</td></tr>
+        <tr><td>A<sub>regen</sub>, A<sub>removed</sub></td><td>Regenerator steel cross-section; housing steel removed behind it</td><td>m²</td></tr>
+        <tr><td>Q<sub>cond</sub></td><td>Extra hot-to-cold conduction through the regenerator steel</td><td>W</td></tr>
         <tr><td>s*</td><td>Break-even stroke where both designs lose the same heat</td><td>m</td></tr>
+        <tr><td>V<sub>0</sub>, θ</td><td>Diaphragm swept volume, and displacer-to-diaphragm phase angle</td><td>m³, °</td></tr>
+        <tr><td>V<sub>eff</sub></td><td>Effective gas volume, V<sub>m</sub> − V<sub>h</sub>·F, plus the regenerator’s extra gas volume × (1 − F/2)</td><td>m³</td></tr>
+        <tr><td>k<sub>other</sub>, η<sub>alt</sub></td><td>Other mechanical losses as a share of ideal power, and alternator efficiency</td><td>–</td></tr>
+        <tr><td>Q<sub>other</sub></td><td>Heat leaks common to both designs (housing conduction, insulation, flue)</td><td>W</td></tr>
+        <tr><td>N, b, d</td><td>Number of slots, slot width, slot depth (the EDM inputs)</td><td>–, m, m</td></tr>
+        <tr><td>D<sub>ID</sub>, D<sub>root</sub>, D<sub>OD</sub></td><td>Regenerator bore at the fin tips, slot root diameter, regenerator outside diameter</td><td>m</td></tr>
+        <tr><td>t<sub>fin</sub>(D)</td><td>Fin thickness at diameter D, the steel left between neighboring slots</td><td>m</td></tr>
+        <tr><td>c, e</td><td>Nominal radial tip gap, and displacer offset from center</td><td>m</td></tr>
+        <tr><td>D<sub>tip</sub>, D<sub>housing</sub></td><td>Fin-tip bore of the regenerator, and housing bore</td><td>m</td></tr>
         <tr><td>V<sub>m</sub>, V<sub>h</sub></td><td>Total gas volume, and hot-side volume including half the regenerator</td><td>m³</td></tr>
       </tbody>
     </table>
@@ -153,6 +313,8 @@
 </div>
 
 <script src="model.js"></script>
+<script src="presets.js"></script>
+<script src="storage.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

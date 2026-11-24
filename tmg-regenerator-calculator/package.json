@@ -1,12 +1,15 @@
 {
   "name": "tmg-regenerator-calculator",
-  "version": "1.0.0",
+  "version": "1.11.0",
   "description": "Stroke trade-off calculator: plain annular gap vs. finned regenerator liner for a TMG Stirling engine",
   "private": true,
   "scripts": {
     "test": "node --test test/model.test.js",
-    "serve": "npx --yes http-server src -p 8080 -c-1"
+    "serve": "npx --yes http-server src -p 8080 -c-1",
+    "build": "node scripts/build.js"
   },
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "license": "UNLICENSED"
 }
